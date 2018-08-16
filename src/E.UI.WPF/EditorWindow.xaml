@@ -1,9 +1,0 @@
-﻿<Window x:Class="E.UI.WPF.EditorWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:E.UI.WPF"
-        mc:Ignorable="d"
-        Title="Editor" Height="360" Width="340" x:Name="MainWindow" SizeToContent="Height">
-</Window>

@@ -1,0 +1,62 @@
+﻿#region License & Terms
+// MIT License
+
+// Copyright (c) 2018 Erik Iwarson
+
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+#endregion
+<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ output extension=".cs" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+using System.Windows;
+using Evolving.UI.Fluent;
+using Evolving.UI.Utilities;
+using Evolving.UI.WPF.Controls;
+
+<# string[] numberTypes = {"int", "long", "float", "double", "decimal"}; #>
+namespace Evolving.UI.WPF
+{
+	public static class SimilarTypes
+	{
+		/// <summary>
+		/// Registers types that use the same code. Currently <see cref="<#= string.Join("\"/>, <see cref=\"", numberTypes) #>"/>.
+		/// </summary>
+		public static void Register()
+		{
+<# for(int i = 0; i < numberTypes.Length; i++)
+{ #>
+			For<<#= numberTypes[i] #>>
+				.Generate(generator => new ETextBox("0") {VerticalContentAlignment = VerticalAlignment.Center, IsReadOnly = generator.IsReadOnly})
+				.WithGetter(getter =>
+				{
+					var value = ((ETextBox) getter.Control).Text;
+					if (!getter.MemberType.IsNullable())
+						ThrowException.IfEmpty(() => value);
+					return value == "" ? null : (<#= numberTypes[i] #>?) <#= numberTypes[i] #>.Parse(value);
+				})
+				.WithSetter(setter =>
+					((ETextBox) setter.Control).Text = setter.Value.SafeToString());
+			
+<# } #>
+		}
+	}
+}
